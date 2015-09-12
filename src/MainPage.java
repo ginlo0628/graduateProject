@@ -7,6 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ProjectUtils.News;
 import jxl.JXLException;
 import jxl.read.biff.BiffException;
 
@@ -27,21 +28,20 @@ public class MainPage {
 
 		// 從kimono爬出來的apple.xls去把對應網址的新聞抓出來
 		Excelhandler eh = new Excelhandler();
-//		ArrayList<String> parsingList = eh
-//				.getParsing("/Users/apple/Documents/workspace/graduateProject/src/appleNews_airport.xlsx");
-//		ArrayList<String> apple_news = getContent＿apple(parsingList);
-
+		ArrayList<News> parsingList = eh
+				.getParsing("/Users/apple/Documents/workspace/graduateProject/src/appleNews_airport.xlsx");
+		ArrayList<News> apple_news = getContent＿apple(parsingList);
+	
 		// housefun直接爬
-		ArrayList<String> house_fun_news = getContent＿housefun();
+		//ArrayList<String> house_fun_news = getContent＿housefun();
 		// 輸出至excel檔
-//		eh.writeContent(apple_news,"apple");
-		eh.writeContent(house_fun_news,"housefun");
+		eh.writeContent(apple_news,"apple");
+		//eh.writeContent(house_fun_news,"housefun");
 	}
 
-	public static ArrayList<String> getContent＿apple(ArrayList<String> a) throws Exception {
-		ArrayList<String> writeList = new ArrayList<String>();
+	public static ArrayList<News> getContent＿apple(ArrayList<News> a) throws Exception {
 		for (int i = 0; i < 133; i++) {
-			String ssss = a.get(i);
+			String ssss = a.get(i).getUrl();
 			URL url = new URL(ssss);
 			Document xmlDoc = Jsoup.parse(url, 300000); //
 			Elements title = xmlDoc.select("p"); // 要解析的tag元素為title
@@ -50,9 +50,9 @@ public class MainPage {
 				newscontent += title.get(j).text();
 			}
 			System.out.println("STILL PARSING APPLE CONTENT......");
-			writeList.add(newscontent);
+			a.get(i).setContent(newscontent);
 		}
-		return writeList;
+		return a;
 	}
 
 	public static ArrayList<String> getContent＿housefun() throws Exception {

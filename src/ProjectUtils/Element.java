@@ -1,4 +1,4 @@
-package BPN;
+package ProjectUtils;
 
 public class Element {
 
