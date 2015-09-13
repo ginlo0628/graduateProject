@@ -1,13 +1,51 @@
 package ProjectUtils;
 
+import java.util.ArrayList;
+
 public class News {
 
 	String time;
 	String title;
 	String Url;
-
 	String Content;
 	String Split_content;
+	ArrayList<SplitWords> all_split_word = new ArrayList<SplitWords>();
+	public int getPositiveEmotion() {
+		return positiveEmotion;
+	}
+
+	public void setPositiveEmotion(int positiveEmotion) {
+		this.positiveEmotion = positiveEmotion;
+	}
+
+	public int getNegativeEmotion() {
+		return negativeEmotion;
+	}
+
+	public void setNegativeEmotion(int negativeEmotion) {
+		this.negativeEmotion = negativeEmotion;
+	}
+
+	public int getTotalEmotion() {
+		return totalEmotion;
+	}
+
+	public void setTotalEmotion(int totalEmotion) {
+		this.totalEmotion = totalEmotion;
+	}
+
+	int positiveEmotion;
+	int negativeEmotion;
+	int totalEmotion;
+			
+			
+	public ArrayList<SplitWords> getAll_split_word() {
+		return all_split_word;
+	}
+
+	public void setAll_split_word(ArrayList<SplitWords> all_split_word) {
+		this.all_split_word = all_split_word;
+	}
 
 	public News() {
 

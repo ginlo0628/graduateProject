@@ -7,7 +7,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ProjectUtils.EmotionUtils;
 import ProjectUtils.News;
+import ProjectUtils.SplitUtils;
 import jxl.JXLException;
 import jxl.read.biff.BiffException;
 
@@ -27,16 +29,29 @@ public class MainPage {
 	public static void main(String[] args) throws Exception {
 
 		// 從kimono爬出來的apple.xls去把對應網址的新聞抓出來
-		Excelhandler eh = new Excelhandler();
-		ArrayList<News> parsingList = eh
-				.getParsing("/Users/apple/Documents/workspace/graduateProject/src/appleNews_airport.xlsx");
-		ArrayList<News> apple_news = getContent＿apple(parsingList);
-	
+//		Excelhandler eh = new Excelhandler();
+//		ArrayList<News> parsingList = eh
+//				.getParsing("/Users/apple/Documents/workspace/graduateProject/src/appleNews_airport.xlsx");
+//		ArrayList<News> apple_news = getContent＿apple(parsingList);
+//	
 		// housefun直接爬
 		//ArrayList<String> house_fun_news = getContent＿housefun();
 		// 輸出至excel檔
-		eh.writeContent(apple_news,"apple");
+	//	eh.writeContent(apple_news,"apple");
 		//eh.writeContent(house_fun_news,"housefun");
+		
+		
+		Excelhandler ehtogetemotion = new Excelhandler();
+		SplitUtils suti =new SplitUtils();
+		ArrayList<News> splitList = ehtogetemotion.geteSplitWord("split_output_apple.xls");
+		ArrayList<News> emotionList = suti.getSplitArray(splitList);
+//		
+		
+		
+		//System.out.println(emotionList.get(0).getAll_split_word().get(0).getKind());
+//		
+		EmotionUtils a = new EmotionUtils();
+		a.checkSO(emotionList);
 	}
 
 	public static ArrayList<News> getContent＿apple(ArrayList<News> a) throws Exception {
