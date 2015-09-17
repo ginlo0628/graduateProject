@@ -29,29 +29,24 @@ public class MainPage {
 	public static void main(String[] args) throws Exception {
 
 		// 從kimono爬出來的apple.xls去把對應網址的新聞抓出來
-//		Excelhandler eh = new Excelhandler();
-//		ArrayList<News> parsingList = eh
-//				.getParsing("/Users/apple/Documents/workspace/graduateProject/src/appleNews_airport.xlsx");
-//		ArrayList<News> apple_news = getContent＿apple(parsingList);
-//	
-		// housefun直接爬
-		//ArrayList<String> house_fun_news = getContent＿housefun();
-		// 輸出至excel檔
-	//	eh.writeContent(apple_news,"apple");
-		//eh.writeContent(house_fun_news,"housefun");
+		Excelhandler eh = new Excelhandler();
+		ArrayList<News> parsingList = eh
+				.getParsing("/Users/apple/Documents/workspace/graduateProject/src/appleNews_airport.xlsx");
+		ArrayList<News> apple_news = getContent＿apple(parsingList);
+		eh.writeContent(apple_news,"apple"); 
+		
+		//housefun kimono無法所以直接爬
+		ArrayList<News> house_fun_news = getContent＿housefun();	
+		eh.writeContent(house_fun_news,"housefun");	
 		
 		
+		//check emotion
 		Excelhandler ehtogetemotion = new Excelhandler();
-		SplitUtils suti =new SplitUtils();
-		ArrayList<News> splitList = ehtogetemotion.geteSplitWord("split_output_apple.xls");
-		ArrayList<News> emotionList = suti.getSplitArray(splitList);
-//		
-		
-		
-		//System.out.println(emotionList.get(0).getAll_split_word().get(0).getKind());
-//		
+	    SplitUtils suti =new SplitUtils();
+		ArrayList<News> apple_splitList = ehtogetemotion.geteSplitWord("split_output_apple.xls");
+		ArrayList<News> apple_emotionList = suti.getSplitArray(apple_splitList);
 		EmotionUtils a = new EmotionUtils();
-		a.checkSO(emotionList);
+		a.checkSO(apple_emotionList);
 	}
 
 	public static ArrayList<News> getContent＿apple(ArrayList<News> a) throws Exception {
@@ -70,9 +65,9 @@ public class MainPage {
 		return a;
 	}
 
-	public static ArrayList<String> getContent＿housefun() throws Exception {
+	public static ArrayList<News> getContent＿housefun() throws Exception {
 		ArrayList<String> urlList = new ArrayList<String>();
-		ArrayList<String> newsList = new ArrayList<String>();
+		ArrayList<News> newsList = new ArrayList<News>();
 
 		URL url1;
 		InputStream is = null;
@@ -87,40 +82,32 @@ public class MainPage {
 				URL url = new URL("http://news.housefun.com.tw/news/%E8%88%AA%E7%A9%BA%E5%9F%8E/" + J + "?od=0&osc=1");
 				is = url.openStream(); // throws an IOException
 				dis = new DataInputStream(new BufferedInputStream(is));
-
+				
+				
 				while ((line = dis.readLine()) != null) {
+					
 					if (line.contains("news/article/"))
 						if (line.contains("m_news_list_image")) {
-							String newsurl = line.substring(26, 55);
+							
+							String newsurl = line.substring(26, 55);					
 							if (newsurl.contains("html"))
 								urlList.add(newsurl);
 							else if (newsurl.contains("htm"))
 								urlList.add(newsurl + "l");
 							else
 								urlList.add(newsurl + "ml");
+							System.out.println(newsurl);
 						}
+					
 				}
 			}
 			System.out.println("PARSING HOUSEFUN URL END==================.");
 			System.out.println(urlList.size());
+			
 			for (int i = 0; i < urlList.size(); i++) {
 				String ssss = "http://news.housefun.com.tw" + urlList.get(i);
-				System.out.println(ssss);
-				URL url = new URL(ssss);
-				Document xmlDoc = Jsoup.parse(url, 300000);
-				Elements link = xmlDoc.select("p");
-				String news = "";
-				System.out.println("STILL PARSING HOUSEFUN CONTENT......"+i);
-				for (int q = 0; q < link.size(); q++) {
-					news += link.get(q).text();
-				}
-				if (news.isEmpty()||news.length()<=20) {
-					Document xmlDoc1 = Jsoup.parse(url, 300000);
-					Elements link1 = xmlDoc.select("div");
-					for (int q = 0; q < link1.size(); q++) {
-						news += link1.get(q).text();
-					}
-				}
+			News news = getNewsFromUrl_housrfun(ssss);
+				System.out.println(news);
 				newsList.add(news);
 			}
 
@@ -138,5 +125,38 @@ public class MainPage {
 		return newsList;
 
 	}
+	
+	static News getNewsFromUrl_housrfun(String ssss) throws IOException{
+		
+		System.out.println(ssss);
+		URL url = new URL(ssss);
+		Document xmlDoc = Jsoup.parse(url, 300000);	
+		Elements link = xmlDoc.select("meta[name=pubdate]");	
+		Elements link2 = xmlDoc.select("title");		
+		String time =link.get(0).attributes().get("content").substring(0, 10);
+		String title =link2.get(0).text();
+		
+		
+		Elements link3 = xmlDoc.select("p");
+		String newsc = "";
+		for (int q = 0; q < link3.size(); q++) {
+			newsc += link3.get(q).text();
+		}
+		if (newsc.isEmpty()||newsc.length()<=20) {
+			Elements link1 = xmlDoc.select("div");
+			for (int q = 0; q < link1.size(); q++) {
+				newsc += link1.get(q).text();
+			}
+		}
+	
+		
+		News news = new News();
+		news.setTime(time);
+		news.setUrl(ssss);
+		news.setTitle(title);
+		news.setContent(newsc);
+		return news;
+	}
+	
 
 }

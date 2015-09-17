@@ -85,7 +85,8 @@ public class EmotionUtils {
 			newsArray.get(i).setPositiveEmotion(pos);
 			newsArray.get(i).setNegativeEmotion(neg);
 			newsArray.get(i).setTotalEmotion(pos - neg);
-			System.out.println(i+" "+pos + "  " + neg + "  " + newsArray.get(i).getTotalEmotion());
+			System.out.println(pos-neg);
+			
 		}
 
 	}
